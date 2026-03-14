@@ -1,0 +1,61 @@
+###############################################################################
+# WeatherRAN Phase 1 Demo — one-command Docker Compose
+#
+# Usage:
+#   docker compose -f deployment/docker-compose.demo.yml up
+#
+# Opens:
+#   http://localhost:3000  — Grafana dashboard
+#   http://localhost:8000  — WeatherRAN API (health, metrics, action-log)
+#
+# Shows:
+#   Live MSC GeoMet weather data -> policy fires -> BER improves vs baseline
+#
+# No API keys needed — MSC GeoMet is anonymous and free (Government of Canada)
+###############################################################################
+
+services:
+  weatherran-app:
+    build:
+      context: ..
+      dockerfile: deployment/demo-app/Dockerfile
+    container_name: weatherran-app
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - weatherran
+
+  grafana:
+    image: grafana/grafana-oss:latest
+    container_name: weatherran-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=weatherran
+      - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/etc/grafana/provisioning/dashboards/weatherran.json
+      - GF_INSTALL_PLUGINS=marcusolsson-json-datasource
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
+    volumes:
+      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+      - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
+    depends_on:
+      weatherran-app:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - weatherran
+
+networks:
+  weatherran:
+    driver: bridge

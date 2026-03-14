@@ -1,0 +1,422 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "id": 1,
+      "title": "WeatherRAN Demo — Phase 1",
+      "type": "text",
+      "gridPos": { "h": 3, "w": 24, "x": 0, "y": 0 },
+      "options": {
+        "mode": "markdown",
+        "content": "# WeatherRAN — First Weather-Predictive O-RAN xApp in Canada (Simulated)\nLive MSC GeoMet weather data feeds into MCS policy which pre-adjusts modulation before RF degrades. BER improvement shown vs fixed-MCS baseline.\n\n**Data source:** Environment Canada MSC GeoMet (anonymous, no API key) | **Channel model:** 3GPP TR 38.901 RMa (prairie) | **Policy:** E2SM-RC v1.03 MCS override"
+      }
+    },
+    {
+      "id": 2,
+      "title": "Rain Intensity (mm/hr)",
+      "type": "gauge",
+      "gridPos": { "h": 8, "w": 6, "x": 0, "y": 3 },
+      "datasource": {
+        "type": "marcusolsson-json-datasource",
+        "uid": "${DS_WEATHERRAN-JSON}"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "fields": [
+            { "jsonPath": "$.weather.rain_mm_per_hr", "type": "number" }
+          ],
+          "method": "GET",
+          "urlPath": "/metrics"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "min": 0,
+          "max": 50,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "#EAB839", "value": 5 },
+              { "color": "orange", "value": 15 },
+              { "color": "red", "value": 25 }
+            ]
+          },
+          "unit": "mm/hr",
+          "color": { "mode": "thresholds" }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": true,
+        "showThresholdMarkers": true
+      }
+    },
+    {
+      "id": 3,
+      "title": "MCS Index — Baseline (Fixed)",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 6, "y": 3 },
+      "datasource": {
+        "type": "marcusolsson-json-datasource",
+        "uid": "${DS_WEATHERRAN-JSON}"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "fields": [
+            { "jsonPath": "$.policy.mcs_baseline", "type": "number" }
+          ],
+          "method": "GET",
+          "urlPath": "/metrics"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "min": 0,
+          "max": 28,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "blue", "value": null }
+            ]
+          },
+          "displayName": "Baseline MCS"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "textMode": "value_and_name",
+        "reduceOptions": { "calcs": ["lastNotNull"] }
+      }
+    },
+    {
+      "id": 4,
+      "title": "MCS Index — Adjusted (WeatherRAN)",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 10, "y": 3 },
+      "datasource": {
+        "type": "marcusolsson-json-datasource",
+        "uid": "${DS_WEATHERRAN-JSON}"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "fields": [
+            { "jsonPath": "$.policy.mcs_adjusted", "type": "number" }
+          ],
+          "method": "GET",
+          "urlPath": "/metrics"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "min": 0,
+          "max": 28,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "#EAB839", "value": 10 },
+              { "color": "orange", "value": 5 }
+            ]
+          },
+          "displayName": "Adjusted MCS"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "textMode": "value_and_name",
+        "reduceOptions": { "calcs": ["lastNotNull"] }
+      }
+    },
+    {
+      "id": 5,
+      "title": "Weather Source",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 14, "y": 3 },
+      "datasource": {
+        "type": "marcusolsson-json-datasource",
+        "uid": "${DS_WEATHERRAN-JSON}"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "fields": [
+            { "jsonPath": "$.weather.source", "type": "string" }
+          ],
+          "method": "GET",
+          "urlPath": "/metrics"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "displayName": "Data Source"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "textMode": "value",
+        "reduceOptions": { "calcs": ["lastNotNull"] }
+      }
+    },
+    {
+      "id": 6,
+      "title": "BER Improvement (%)",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 3 },
+      "datasource": {
+        "type": "marcusolsson-json-datasource",
+        "uid": "${DS_WEATHERRAN-JSON}"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "fields": [
+            { "jsonPath": "$.ber.improvement_pct", "type": "number" }
+          ],
+          "method": "GET",
+          "urlPath": "/metrics"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "min": 0,
+          "max": 100,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "#EAB839", "value": 5 },
+              { "color": "green", "value": 15 }
+            ]
+          },
+          "unit": "percent",
+          "displayName": "BER Improvement"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "textMode": "value_and_name",
+        "reduceOptions": { "calcs": ["lastNotNull"] }
+      }
+    },
+    {
+      "id": 7,
+      "title": "Policy Action",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 10, "x": 6, "y": 7 },
+      "datasource": {
+        "type": "marcusolsson-json-datasource",
+        "uid": "${DS_WEATHERRAN-JSON}"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "fields": [
+            { "jsonPath": "$.policy.action", "type": "string" }
+          ],
+          "method": "GET",
+          "urlPath": "/metrics"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "displayName": "Current Policy Action"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "textMode": "value",
+        "reduceOptions": { "calcs": ["lastNotNull"] }
+      }
+    },
+    {
+      "id": 8,
+      "title": "Demo Cycle Count",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 7 },
+      "datasource": {
+        "type": "marcusolsson-json-datasource",
+        "uid": "${DS_WEATHERRAN-JSON}"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "fields": [
+            { "jsonPath": "$.meta.cycle_count", "type": "number" }
+          ],
+          "method": "GET",
+          "urlPath": "/metrics"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "displayName": "Cycles"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "textMode": "value_and_name",
+        "reduceOptions": { "calcs": ["lastNotNull"] }
+      }
+    },
+    {
+      "id": 9,
+      "title": "BER Comparison — Fixed MCS vs WeatherRAN Adaptive",
+      "type": "barchart",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 11 },
+      "datasource": {
+        "type": "marcusolsson-json-datasource",
+        "uid": "${DS_WEATHERRAN-JSON}"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "fields": [
+            { "jsonPath": "$.ber.baseline", "type": "number", "language": "jsonpath" },
+            { "jsonPath": "$.ber.adaptive", "type": "number", "language": "jsonpath" }
+          ],
+          "method": "GET",
+          "urlPath": "/metrics"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "sci",
+          "custom": {
+            "fillOpacity": 80,
+            "gradientMode": "scheme",
+            "lineWidth": 1
+          },
+          "color": { "mode": "palette-classic" }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "baseline" },
+            "properties": [
+              { "id": "displayName", "value": "Fixed MCS (Baseline)" },
+              { "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "adaptive" },
+            "properties": [
+              { "id": "displayName", "value": "WeatherRAN Adaptive" },
+              { "id": "color", "value": { "fixedColor": "green", "mode": "fixed" } }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "orientation": "horizontal",
+        "barWidth": 0.5,
+        "groupWidth": 0.7,
+        "showValue": "always",
+        "stacking": "none",
+        "legend": { "displayMode": "list", "placement": "bottom" },
+        "tooltip": { "mode": "single" },
+        "xTickLabelRotation": 0
+      }
+    },
+    {
+      "id": 10,
+      "title": "Policy Action Log",
+      "type": "table",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 11 },
+      "datasource": {
+        "type": "marcusolsson-json-datasource",
+        "uid": "${DS_WEATHERRAN-JSON}"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "fields": [
+            { "jsonPath": "$[*].time", "type": "string", "language": "jsonpath" },
+            { "jsonPath": "$[*].rain_mm_hr", "type": "number", "language": "jsonpath" },
+            { "jsonPath": "$[*].source", "type": "string", "language": "jsonpath" },
+            { "jsonPath": "$[*].action", "type": "string", "language": "jsonpath" },
+            { "jsonPath": "$[*].mcs_baseline", "type": "number", "language": "jsonpath" },
+            { "jsonPath": "$[*].mcs_adjusted", "type": "number", "language": "jsonpath" },
+            { "jsonPath": "$[*].ber_baseline", "type": "string", "language": "jsonpath" },
+            { "jsonPath": "$[*].ber_adaptive", "type": "string", "language": "jsonpath" },
+            { "jsonPath": "$[*].improvement_pct", "type": "string", "language": "jsonpath" }
+          ],
+          "method": "GET",
+          "urlPath": "/action-log"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "time" },
+            "properties": [
+              { "id": "displayName", "value": "Time" },
+              { "id": "custom.width", "value": 180 }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "rain_mm_hr" },
+            "properties": [
+              { "id": "displayName", "value": "Rain (mm/hr)" }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "action" },
+            "properties": [
+              { "id": "displayName", "value": "Policy Action" },
+              { "id": "custom.width", "value": 250 }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "showHeader": true,
+        "sortBy": [{ "displayName": "Time", "desc": true }],
+        "footer": { "show": false }
+      }
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 39,
+  "tags": ["weatherran", "demo", "phase1"],
+  "templating": { "list": [] },
+  "time": { "from": "now-1h", "to": "now" },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "WeatherRAN Demo — Phase 1",
+  "uid": "weatherran-phase1-demo",
+  "version": 1
+}

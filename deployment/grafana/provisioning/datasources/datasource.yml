@@ -1,0 +1,19 @@
+apiVersion: 1
+
+datasources:
+  - name: WeatherRAN
+    type: simpod-json-datasource
+    access: proxy
+    url: http://weatherran-app:8000
+    isDefault: true
+    editable: false
+    jsonData:
+      tlsSkipVerify: true
+
+  - name: WeatherRAN-JSON
+    type: marcusolsson-json-datasource
+    access: proxy
+    url: http://weatherran-app:8000
+    editable: false
+    jsonData:
+      queryString: ""
