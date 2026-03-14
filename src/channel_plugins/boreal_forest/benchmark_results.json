@@ -1,0 +1,53 @@
+{
+  "summary": {
+    "scenario": "boreal_forest",
+    "terrain_type": "boreal_forest",
+    "region": "ontario_north",
+    "fc_ghz": 3.5,
+    "h_bs_m": 35.0,
+    "h_ut_m": 1.5,
+    "rain_mm_per_hr": 0.0,
+    "snow_depth_cm": 0.0,
+    "vegetation_depth_m": 50.0,
+    "foliage_attenuation_db": 10.4274,
+    "snow_attenuation_db": 0.0,
+    "n_runs": 50,
+    "seed": 42,
+    "spec_reference": "3GPP TR 38.901 V17.0.0, Table 7.4.1-1 (RMa)",
+    "foliage_model_reference": "ITU-R P.833-9",
+    "rain_model_reference": "ITU-R P.838-3",
+    "pl_mean_db": 115.06,
+    "pl_std_db": 25.83,
+    "pl_min_db": 82.95,
+    "pl_max_db": 160.97,
+    "pl_median_db": 105.67,
+    "n_los": 31,
+    "n_nlos": 19
+  },
+  "validation": {
+    "validation": "3GPP TR 38.901 Table 7.4.1-1 \u00b1 2dB",
+    "overall_pass": true,
+    "checks": [
+      {
+        "check": "pl_mean_range",
+        "pass": true,
+        "detail": "PL mean 115.1 dB within [60.0, 250.0]"
+      },
+      {
+        "check": "pl_std_range",
+        "pass": true,
+        "detail": "PL std 25.8 dB reasonable for distance + SF spread"
+      },
+      {
+        "check": "los_ratio",
+        "pass": true,
+        "detail": "LOS ratio 0.62 within expected range"
+      },
+      {
+        "check": "foliage_attenuation",
+        "pass": true,
+        "detail": "Foliage attenuation 10.43 dB applied (ITU-R P.833-9)"
+      }
+    ]
+  }
+}
