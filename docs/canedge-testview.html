@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CanEdge AI-RAN — Test Dashboard</title>
+<style>
+  body { font-family: 'Courier New', monospace; background: #1a1a2e; color: #e0e0e0; margin: 0; padding: 20px; }
+  .container { max-width: 900px; margin: 0 auto; }
+  h1 { color: #00d4ff; border-bottom: 2px solid #00d4ff; padding-bottom: 10px; }
+  h2 { color: #ff6b35; margin-top: 30px; }
+  .card { background: #16213e; border: 1px solid #0f3460; border-radius: 8px; padding: 20px; margin: 15px 0; }
+  .metric { display: inline-block; width: 200px; margin: 10px; text-align: center; }
+  .metric .value { font-size: 2em; font-weight: bold; color: #00d4ff; }
+  .metric .label { font-size: 0.85em; color: #888; }
+  .status { display: inline-block; padding: 4px 12px; border-radius: 4px; font-weight: bold; }
+  .pass { background: #27ae60; color: white; }
+  .fail { background: #e74c3c; color: white; }
+  table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+  th, td { padding: 8px 12px; text-align: left; border-bottom: 1px solid #0f3460; }
+  th { color: #00d4ff; }
+  .refs { font-size: 0.85em; color: #888; }
+  .footer { margin-top: 40px; padding-top: 10px; border-top: 1px solid #333; font-size: 0.8em; color: #555; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>CanEdge AI-RAN — Test Dashboard</h1>
+  <p>Phase 0 — 5% complete
+  | Next: WeatherRAN Week 8</p>
+
+  <h2>Latest Benchmark</h2>
+  <div class="card">
+    <div class="metric">
+      <div class="value">11.7%</div>
+      <div class="label">BER Improvement</div>
+    </div>
+    <div class="metric">
+      <div class="value">50</div>
+      <div class="label">Monte-Carlo Runs</div>
+    </div>
+    <div class="metric">
+      <div class="value" style="color: #27ae60">PASS</div>
+      <div class="label">Adaptive vs Fixed</div>
+    </div>
+    <div class="metric">
+      <div class="value">104.6</div>
+      <div class="label">Mean PL (dB)</div>
+    </div>
+  </div>
+
+  <h2>Scenario Details</h2>
+  <div class="card">
+    <table>
+      <tr><th>Parameter</th><th>Value</th></tr>
+      <tr><td>Terrain</td><td>prairie_rma</td></tr>
+      <tr><td>Weather</td><td>rain_10.0_mm_hr</td></tr>
+      <tr><td>Frequency</td><td>3.5 GHz (mid-band 5G)</td></tr>
+      <tr><td>TX Power</td><td>43.0 dBm</td></tr>
+      <tr><td>Bandwidth</td><td>20 MHz</td></tr>
+      <tr><td>Fixed MCS</td><td>15</td></tr>
+      <tr><td>Adaptive MCS (rain)</td><td>13</td></tr>
+      <tr><td>Rain Intensity</td><td>10.0 mm/hr</td></tr>
+    </table>
+  </div>
+
+  <h2>BER Results</h2>
+  <div class="card">
+    <table>
+      <tr><th>Metric</th><th>Fixed MCS</th><th>Adaptive MCS</th></tr>
+      <tr>
+        <td>Mean BER</td>
+        <td>1.0095e-01</td>
+        <td>8.9130e-02</td>
+      </tr>
+      <tr>
+        <td>Path Loss (mean)</td>
+        <td colspan="2">104.6 dB ± 25.8</td>
+      </tr>
+    </table>
+  </div>
+
+  <h2>Spec References</h2>
+  <div class="card refs">
+    <ul>
+      <li>3GPP TR 38.901 V17.0.0, Table 7.4.1-1 (RMa path loss)</li><li>3GPP TS 38.214 Table 5.1.3.1-1 (MCS index table)</li><li>ITU-R P.838-3 (rain attenuation)</li><li>O-RAN E2SM-RC v1.03, Section 7.6 (control procedure)</li>
+    </ul>
+  </div>
+
+  <div class="footer">
+    Generated: 2026-03-14 04:51 UTC
+    | Weather API: MSC GeoMet (anonymous, no key)
+    | Seed: 42
+    <br>⚠ Benchmark claims require legal review before external use (Rule R-9)
+  </div>
+</div>
+</body>
+</html>

@@ -890,6 +890,129 @@ WMS          Web Map Service
 ```
 
 ---
+## 13. LIVE TEST DASHBOARD — canedge-testview.html
+
+> The dashboard at docs/canedge-testview.html is a living document.
+> It must stay in sync with actual test results after every run.
+> canedge-eval is responsible for updating it. No manual edits.
+
+DASHBOARD_SYNC_RULES:
+  after_every_pytest_run:
+    cmd: "python tools/update_dashboard.py"
+    reads: reports/latest_results.json   (pytest --json-report output)
+    writes: docs/canedge-testview.html   (updates test statuses + bar values)
+    commits: "chore: update test dashboard [auto]"
+
+  update_dashboard.py must update:
+    - Every test-row status (PASS / FAIL / PENDING / scheduled week)
+    - Every bar chart value (BER, latency, run counts)
+    - The hero stat counter (passing tests)
+    - The ticker feed items
+    - The terrain run counts + progress bars
+    - Timestamp in footer
+
+  canedge-eval triggers update_dashboard.py automatically after:
+    - Any smoke test run
+    - Any full benchmark run
+    - Any new eval report written to reports/
+
+  canedge-monitor checks on session start:
+    - docs/canedge-testview.html age vs reports/latest_results.json age
+    - If dashboard is stale → run python tools/update_dashboard.py
+```
+
+---
+
+## The one prompt to give Claude Code
+
+This does everything — builds the sync script, wires pytest output into the dashboard, and hooks it into CI. Copy and paste this exactly:
+```
+Read PROJECT.md section 13 and the existing docs/canedge-testview.html.
+
+Build a complete real-time dashboard sync system:
+
+1. PYTEST JSON OUTPUT
+   Add --json-report to all pytest calls in .github/workflows/canedge-ci.yml
+   so every test run writes: reports/latest_results.json
+   Install dependency: pip install pytest-json-report
+
+2. UPDATE SCRIPT — tools/update_dashboard.py
+   Reads: reports/latest_results.json
+   Reads: reports/latest_benchmark.json (if exists, else uses defaults)
+   Writes: docs/canedge-testview.html (in-place update of data values)
+   
+   Must update these things in the HTML:
+   - #passing-count data value → count of passing tests
+   - Each .test-result element → actual PASS / FAIL / result value
+   - Each .test-indicator color → green (pass), amber (fail), grey (not run)
+   - Each .bar-fill data-val → actual benchmark numbers
+   - Footer timestamp → current datetime
+   - Ticker items → last 5 test results as feed items
+   - Terrain run counts → from benchmark JSON
+   
+   Use regex or a simple JSON→HTML injection pattern. 
+   The HTML uses data attributes and IDs — update those, not the whole file.
+   Print a summary: "Dashboard updated: X passing, Y failing, Z pending"
+
+3. BENCHMARK REPORTER — tools/write_benchmark_json.py
+   After any Sionna Monte-Carlo run, writes reports/latest_benchmark.json:
+   {
+     "prairie_runs": N,
+     "prairie_ber_baseline": X,
+     "prairie_ber_weatherran": Y,
+     "latency_uu": Z,
+     "latency_ran": Z,
+     "latency_backhaul": Z,
+     "latency_app": Z,
+     "latency_e2e": Z,
+     "weather_api_p50": Z,
+     "weather_api_p95": Z,
+     "run_date": "ISO8601"
+   }
+
+4. CI INTEGRATION
+   Add to .github/workflows/canedge-ci.yml after every test job:
+     - name: Update test dashboard
+       run: python tools/update_dashboard.py
+     - name: Commit dashboard update
+       run: |
+         git config user.email "ci@canedge"
+         git config user.name "CanEdge CI"
+         git add docs/canedge-testview.html reports/
+         git diff --staged --quiet || git commit -m "chore: update test dashboard [auto]"
+         git push
+
+5. MONITOR HOOK
+   Add to tools/budget_check.py or as a standalone check:
+   Compare mtime of docs/canedge-testview.html vs reports/latest_results.json
+   If dashboard is older → print WARN: dashboard stale, run python tools/update_dashboard.py
+
+6. PAIRED TESTS
+   tests/smoke/test_update_dashboard.py must verify:
+   - update_dashboard.py runs without error on a mock latest_results.json
+   - Output HTML contains the mock test count
+   - Output HTML timestamp is updated
+
+Run the script once with the current test state to confirm it works.
+Print the dashboard update summary.
+```
+
+---
+
+## How it works end-to-end
+```
+You run:  pytest tests/smoke/ --json-report
+             ↓
+CI writes: reports/latest_results.json
+             ↓
+CI runs:   python tools/update_dashboard.py
+             ↓
+Updates:   docs/canedge-testview.html  ← numbers change automatically
+             ↓
+CI commits: "chore: update test dashboard [auto]"
+             ↓
+Anyone opens the HTML file → sees the real current state
+---
 
 *PROJECT.md v1.1 — updated 2026-03-13*
 

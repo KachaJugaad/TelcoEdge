@@ -1,0 +1,43 @@
+{
+  "summary": {
+    "scenario": "prairie_rma",
+    "terrain_type": "prairie_rma",
+    "region": "saskatchewan",
+    "fc_ghz": 3.5,
+    "h_bs_m": 35.0,
+    "h_ut_m": 1.5,
+    "rain_mm_per_hr": 0.0,
+    "n_runs": 50,
+    "seed": 42,
+    "spec_reference": "3GPP TR 38.901 V17.0.0, Table 7.4.1-1 (RMa)",
+    "rain_model_reference": "ITU-R P.838-3",
+    "pl_mean_db": 104.63,
+    "pl_std_db": 25.83,
+    "pl_min_db": 72.52,
+    "pl_max_db": 150.54,
+    "pl_median_db": 95.24,
+    "n_los": 31,
+    "n_nlos": 19
+  },
+  "validation": {
+    "validation": "3GPP TR 38.901 Table 7.4.1-1 \u00b1 2dB",
+    "overall_pass": true,
+    "checks": [
+      {
+        "check": "pl_mean_range",
+        "pass": true,
+        "detail": "PL mean 104.6 dB within [60.0, 200.0]"
+      },
+      {
+        "check": "pl_std_range",
+        "pass": true,
+        "detail": "PL std 25.8 dB reasonable for distance + SF spread"
+      },
+      {
+        "check": "los_ratio",
+        "pass": true,
+        "detail": "LOS ratio 0.62 within expected range"
+      }
+    ]
+  }
+}
