@@ -3,3 +3,9 @@ __pycache__/
 *.pyo
 .env
 .pytest_cache/
+
+# Internal project management (not for public repo)
+project.md
+CLAUDE.md
+.canedge/
+.claude/

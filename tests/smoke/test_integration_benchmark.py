@@ -5,7 +5,7 @@ Asserts: BER in simulated rain is lower with adaptive MCS than with fixed MCS
 Runs: 50 Monte-Carlo iterations
 Output: reports/latest_benchmark.json
 
-This is the canedge-eval Phase 1 smoke harness.
+Phase 1 integration smoke harness.
 """
 import json
 import math

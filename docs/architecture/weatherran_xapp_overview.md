@@ -1,8 +1,8 @@
 # WeatherRAN xApp — Architecture Overview
 
-> canedge-architect output · Phase 1 · 2026-03-14
+> Phase 1 · 2026-03-14
 > All spec references cite pinned versions from specs/versions.lock.
-> If any detail is marked "Unknown", do not implement — human must verify first.
+> If any detail is marked "Unknown", do not implement — verify against spec first.
 
 ## 1. System Context
 
@@ -155,7 +155,7 @@ class WeatherMCSPolicy:
 
 ## 5. Latency Budget (per hop)
 
-Per PROJECT.md Rule R-5 and canedge-eval spec:
+Per project latency requirements:
 
 | Hop | Budget | Notes |
 |---|---|---|

@@ -238,4 +238,4 @@ Apache 2.0
 
 ---
 
-*Built with Claude Code. Validated against 3GPP, O-RAN, and ITU-R specifications.*
+*Validated against 3GPP, O-RAN, and ITU-R specifications.*
