@@ -13,14 +13,12 @@
   .metric { display: inline-block; width: 200px; margin: 10px; text-align: center; }
   .metric .value { font-size: 2em; font-weight: bold; color: #00d4ff; }
   .metric .label { font-size: 0.85em; color: #888; }
-  .status { display: inline-block; padding: 4px 12px; border-radius: 4px; font-weight: bold; }
-  .pass { background: #27ae60; color: white; }
-  .fail { background: #e74c3c; color: white; }
   table { width: 100%; border-collapse: collapse; margin: 10px 0; }
   th, td { padding: 8px 12px; text-align: left; border-bottom: 1px solid #0f3460; }
   th { color: #00d4ff; }
   .refs { font-size: 0.85em; color: #888; }
   .footer { margin-top: 40px; padding-top: 10px; border-top: 1px solid #333; font-size: 0.8em; color: #555; }
+  .big-status { font-size: 1.4em; font-weight: bold; padding: 8px 20px; border-radius: 6px; display: inline-block; }
 </style>
 </head>
 <body>
@@ -29,7 +27,33 @@
   <p>Phase 0 — 5% complete
   | Next: WeatherRAN Week 8</p>
 
-  <h2>Latest Benchmark</h2>
+  <h2>Pipeline Status</h2>
+  <div class="card" style="text-align: center;">
+    <div class="big-status" style="background: #27ae60; color: white;">
+      ALL GREEN — 118/118 tests passed
+    </div>
+  </div>
+
+  <h2>Test Results by Module</h2>
+  <div class="card">
+    <table>
+      <tr><th>Module</th><th>Status</th></tr>
+      <tr><td>adapters/test_weather_gc_adapter.py</td><td><span style="color:#27ae60">&#10003; 13/13</span></td></tr>
+      <tr><td>channel/boreal_forest/test_scene.py</td><td><span style="color:#27ae60">&#10003; 15/15</span></td></tr>
+      <tr><td>channel/prairie_rma/test_scene.py</td><td><span style="color:#27ae60">&#10003; 16/16</span></td></tr>
+      <tr><td>policies/test_beam_adaptation_policy.py</td><td><span style="color:#27ae60">&#10003; 28/28</span></td></tr>
+      <tr><td>policies/test_weather_mcs_policy.py</td><td><span style="color:#27ae60">&#10003; 16/16</span></td></tr>
+      <tr><td>smoke/test_budget_check.py</td><td><span style="color:#27ae60">&#10003; 5/5</span></td></tr>
+      <tr><td>smoke/test_integration_benchmark.py</td><td><span style="color:#27ae60">&#10003; 5/5</span></td></tr>
+      <tr><td>smoke/test_lineage_audit.py</td><td><span style="color:#27ae60">&#10003; 5/5</span></td></tr>
+      <tr><td>smoke/test_ntn_coverage_freshness.py</td><td><span style="color:#27ae60">&#10003; 5/5</span></td></tr>
+      <tr><td>smoke/test_spec_version_check.py</td><td><span style="color:#27ae60">&#10003; 3/3</span></td></tr>
+      <tr><td>smoke/test_stride_check.py</td><td><span style="color:#27ae60">&#10003; 3/3</span></td></tr>
+      <tr><td>smoke/test_weather_api_check.py</td><td><span style="color:#27ae60">&#10003; 4/4</span></td></tr>
+    </table>
+  </div>
+
+  <h2>Benchmark: Adaptive MCS vs Fixed</h2>
   <div class="card">
     <div class="metric">
       <div class="value">11.7%</div>
@@ -75,7 +99,7 @@
       </tr>
       <tr>
         <td>Path Loss (mean)</td>
-        <td colspan="2">104.6 dB ± 25.8</td>
+        <td colspan="2">104.6 dB +/- 25.8</td>
       </tr>
     </table>
   </div>
@@ -88,10 +112,10 @@
   </div>
 
   <div class="footer">
-    Generated: 2026-03-14 04:51 UTC
+    Generated: 2026-03-14 06:18 UTC
     | Weather API: MSC GeoMet (anonymous, no key)
     | Seed: 42
-    <br>⚠ Benchmark claims require legal review before external use (Rule R-9)
+    <br>Benchmark claims require legal review before external use (Rule R-9)
   </div>
 </div>
 </body>
