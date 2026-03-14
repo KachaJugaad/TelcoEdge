@@ -1,13 +1,15 @@
 # WeatherRAN — Weather-Predictive O-RAN xApp for Rural Canada
 
+**[Live Dashboard](https://kachajugaad.github.io/TelcoEdge/)** | **[Phase 1 Results: 5.3% signal improvement across 2,000 simulations](https://kachajugaad.github.io/TelcoEdge/)**
+
 **Traditional RAN waits for signal to degrade, then reacts.
 WeatherRAN reads the weather forecast and adapts *before* the rain hits.**
 
 An open-source O-RAN xApp that uses free Government of Canada weather data to predictively adjust modulation and beam parameters for rural Canadian 5G networks.
 
 ```
-Result: 11.7% BER improvement vs fixed MCS baseline
-        (N=50 Monte-Carlo runs, 3GPP TR 38.901 RMa, prairie terrain, 10mm/hr rain)
+Result: 5.3% BER improvement on prairie, 3.3% on boreal forest
+        (N=1,000 Monte-Carlo runs per terrain, 3GPP TR 38.901 RMa, 10mm/hr rain)
 ```
 
 ---
