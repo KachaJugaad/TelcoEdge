@@ -238,4 +238,4 @@ Apache 2.0
 
 ---
 
-*Validated against 3GPP, O-RAN, and ITU-R specifications.*
+*Validated against 3GPP, O-RAN, and ITU-R specifications. Apache 2.0 Licensed.*
