@@ -1,0 +1,8 @@
+osc_xapp_sdk: j-release-2025
+sionna: 0.18.0
+oran_e2sm_kpm: v3.0
+oran_e2sm_rc: v1.03
+3gpp_ntn_spec: TR38.821-Rel18
+env_canada_api: MSC-GeoMet-OGC-anonymous
+python: '3.11'
+docker: '24.0'
