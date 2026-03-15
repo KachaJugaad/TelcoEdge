@@ -82,15 +82,69 @@ v1.03 control actions to maintain link quality under adverse conditions.
 
 ---
 
+### 3. spectrum_anomaly_policy.py
+
+| Field | Value |
+|---|---|
+| **File** | `src/policies/spectrum_anomaly_policy.py` |
+| **Status** | Implemented |
+| **Test file** | `tests/policies/test_spectrum_anomaly_policy.py` |
+| **Phase** | Phase 2 |
+| **Date implemented** | 2026-03-15 |
+| **Related claim** | Supports Claim 1 in `docs/ip/claims_draft.md` (spectrum anomaly extension) |
+
+**What it does:**
+
+Spectrum anomaly detection policy for the WeatherRAN xApp. Monitors RF
+spectrum measurements via E2SM-KPM reports and detects anomalous interference
+patterns that may correlate with weather-induced propagation changes. When
+an anomaly is detected, the policy triggers appropriate mitigation actions
+via O-RAN E2SM-RC v1.03 control actions.
+
+**References:**
+
+- O-RAN E2SM-RC v1.03, Section 7.6 (Control Procedure)
+- O-RAN E2SM-KPM v3.0, Table 7.4.3-1
+- OSC RICAPP: j-release-2025 (pinned in specs/versions.lock)
+
+---
+
+### 4. ntn_handover_predictor.py
+
+| Field | Value |
+|---|---|
+| **File** | `src/policies/ntn_handover_predictor.py` |
+| **Status** | Implemented |
+| **Test file** | `tests/policies/test_ntn_handover_predictor.py` |
+| **Phase** | Phase 2 |
+| **Date implemented** | 2026-03-15 |
+| **Related claim** | Supports Claim 1 in `docs/ip/claims_draft.md` (NTN handover extension) |
+
+**What it does:**
+
+Non-Terrestrial Network (NTN) handover prediction policy. Predicts LEO
+satellite dropout 60 seconds ahead by correlating orbital trajectory data
+with weather conditions from the MSC GeoMet adapter. Proactively initiates
+handover to terrestrial fallback cells before the satellite link degrades,
+using O-RAN E2SM-RC v1.03 control actions.
+
+**References:**
+
+- O-RAN E2SM-RC v1.03, Section 7.6 (Control Procedure)
+- O-RAN E2SM-KPM v3.0, Table 7.4.3-1
+- 3GPP TR 38.821 (NTN channel model and handover procedures)
+- OSC RICAPP: j-release-2025 (pinned in specs/versions.lock)
+
+---
+
 ## Planned Policy Classes (Not Yet Implemented)
 
 | Policy file | Target phase | Description |
 |---|---|---|
-| `ntn_handover_predictor.py` | Phase 2 (Week 12-14) | Predict LEO dropout 60 seconds ahead |
 | `iot_priority_scheduler.py` | Phase 3 | Sensor burst + URLLC coexistence scheduling |
 | `dnd_priority_queue.py` | Phase 3 | Defence priority queue (STRIDE model required) |
 
 ---
 
-*DRAFT -- Date: 2026-03-14*
+*DRAFT -- Date: 2026-03-15*
 *Update this register when any new policy class is added to src/policies/*
