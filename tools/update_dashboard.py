@@ -74,7 +74,7 @@ def generate_html(bench_50, bench_1000, test_results):
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WeatherRAN — Phase 1 Results</title>
+<title>WeatherRAN — Project Dashboard</title>
 <style>
   * {{ box-sizing: border-box; }}
   body {{ font-family: -apple-system, 'Segoe UI', Roboto, sans-serif; background: #0a0e27; color: #e0e0e0; margin: 0; padding: 20px; line-height: 1.6; }}
@@ -109,7 +109,7 @@ def generate_html(bench_50, bench_1000, test_results):
 <body>
 <div class="container">
 
-  <h1>WeatherRAN <span>Phase 1 Complete</span></h1>
+  <h1>WeatherRAN <span>Dashboard</span></h1>
   <p class="subtitle">Weather-predictive O-RAN xApp for rural Canadian 5G networks</p>
 
   <!-- HERO: The main achievement -->
@@ -127,23 +127,23 @@ def generate_html(bench_50, bench_1000, test_results):
   </div>
 
   <!-- KEY METRICS -->
-  <h2>Key Results (1,000 Simulation Runs)</h2>
+  <h2>Key Results</h2>
   <div class="metrics">
     <div class="metric">
       <div class="value">{p_improve:.1f}%</div>
-      <div class="label">Prairie improvement</div>
+      <div class="label">Prairie improvement (N=1000)</div>
     </div>
     <div class="metric">
       <div class="value">{b_improve:.1f}%</div>
-      <div class="label">Forest improvement</div>
+      <div class="label">Forest improvement (N=1000)</div>
     </div>
     <div class="metric">
-      <div class="value">1,000</div>
-      <div class="label">Simulations per terrain</div>
+      <div class="value">4</div>
+      <div class="label">Canadian terrains modelled</div>
     </div>
     <div class="metric">
-      <div class="value">2</div>
-      <div class="label">Canadian terrains tested</div>
+      <div class="value">{test_results['total']}</div>
+      <div class="label">Tests passing</div>
     </div>
   </div>
 
@@ -248,16 +248,19 @@ def generate_html(bench_50, bench_1000, test_results):
     <table>
       <tr><th>Deliverable</th><th>Status</th><th>What it means</th></tr>
       <tr><td>Weather adapter</td><td><span class="phase-tag">Done</span></td><td>Reads live Canadian weather data — free, no API key</td></tr>
-      <tr><td>Prairie channel model</td><td><span class="phase-tag">Done</span></td><td>Simulates how radio signals travel across flat Saskatchewan farmland</td></tr>
-      <tr><td>Boreal forest model</td><td><span class="phase-tag">Done</span></td><td>Adds tree blockage + snow effects for Ontario/Quebec forests</td></tr>
+      <tr><td>Prairie channel model</td><td><span class="phase-tag">Done</span></td><td>Flat Saskatchewan farmland — 3GPP RMa + rain attenuation</td></tr>
+      <tr><td>Boreal forest model</td><td><span class="phase-tag">Done</span></td><td>Ontario/Quebec forests — foliage blockage + snow effects</td></tr>
+      <tr><td>Rocky mountain model</td><td><span class="phase-tag">Done</span></td><td>BC/Alberta Rockies — mountain diffraction + valley multipath</td></tr>
+      <tr><td>Arctic tundra model</td><td><span class="phase-tag">Done</span></td><td>Northern Canada — permafrost reflection + ice loading + blizzard</td></tr>
+      <tr><td>RAN-Intel live map</td><td><span class="phase-tag">Done</span></td><td>6 Canadian sites on Leaflet.js map with live weather radar overlay</td></tr>
       <tr><td>MCS adjustment policy</td><td><span class="phase-tag">Done</span></td><td>Automatically makes radio more robust when rain is coming</td></tr>
       <tr><td>Beam adaptation policy</td><td><span class="phase-tag">Done</span></td><td>Widens antenna beam to cover more area during storms</td></tr>
       <tr><td>1,000-run benchmark</td><td><span class="phase-tag">Done</span></td><td>Statistically validated across 2 terrains, 2,000 total simulations</td></tr>
       <tr><td>One-command demo</td><td><span class="phase-tag">Done</span></td><td>docker compose up — runs entire demo on any laptop</td></tr>
       <tr><td>Demo script</td><td><span class="phase-tag">Done</span></td><td>15-minute presentation ready for TELUS / DND</td></tr>
       <tr><td>Patent claim drafts</td><td><span class="phase-tag pending">Review</span></td><td>3 claims drafted, need patent agent review</td></tr>
-      <tr><td>Rocky mountain model</td><td><span class="phase-tag pending">Phase 2</span></td><td>Coming next</td></tr>
-      <tr><td>Arctic tundra model</td><td><span class="phase-tag pending">Phase 2</span></td><td>Coming next</td></tr>
+      <tr><td>NTN handover predictor</td><td><span class="phase-tag pending">Phase 2</span></td><td>Predict satellite dropout 60 seconds ahead</td></tr>
+      <tr><td>Anomaly detection</td><td><span class="phase-tag pending">Phase 2</span></td><td>Spectrum anomaly detection for rural + defence</td></tr>
     </table>
   </div>
 
@@ -286,8 +289,8 @@ def generate_html(bench_50, bench_1000, test_results):
   </div>
 
   <div class="footer">
-    WeatherRAN Phase 1 — Completed 2026-03-14 | {test_results['total']} tests passing
-    | 2,000 total simulation runs across 2 Canadian terrains
+    WeatherRAN | {test_results['total']} tests passing
+    | 4 Canadian terrain archetypes | 2,000+ simulation runs
     <br>Weather data: Environment Canada MSC GeoMet (anonymous, free, sovereign)
     <br>Apache 2.0 Licensed | github.com/KachaJugaad/TelcoEdge
   </div>
