@@ -1,8 +1,10 @@
 {
   "benchmark_run": {
-    "date": "2026-03-14T07:33:46.036390+00:00",
+    "date": "2026-03-15T10:01:24.747010+00:00",
     "n_runs": 1000,
     "seed": 42,
+    "terrains": 4,
+    "total_simulations": 4000,
     "note": "Rule R-9: benchmark claims need legal review before external use."
   },
   "prairie_rma": {
@@ -26,7 +28,7 @@
       "ITU-R P.838-3 (rain attenuation)",
       "O-RAN E2SM-RC v1.03, Section 7.6 (control procedure)"
     ],
-    "timestamp": "2026-03-14T07:33:46.031414+00:00",
+    "timestamp": "2026-03-15T10:01:24.727801+00:00",
     "pl_mean_db": 107.66,
     "pl_std_db": 31.78
   },
@@ -34,7 +36,6 @@
     "scenario": "boreal_forest_rain",
     "terrain_type": "boreal_forest",
     "weather_condition": "rain_10.0_mm_hr",
-    "vegetation_depth_m": 50.0,
     "n_runs": 1000,
     "seed": 42,
     "fixed_mcs": 15,
@@ -50,11 +51,69 @@
       "3GPP TR 38.901 V17.0.0, Table 7.4.1-1 (RMa path loss)",
       "3GPP TS 38.214 Table 5.1.3.1-1 (MCS index table)",
       "ITU-R P.838-3 (rain attenuation)",
-      "ITU-R P.833-9 (foliage attenuation)",
-      "O-RAN E2SM-RC v1.03, Section 7.6 (control procedure)"
+      "O-RAN E2SM-RC v1.03, Section 7.6 (control procedure)",
+      "ITU-R P.833-9 (foliage attenuation)"
     ],
-    "timestamp": "2026-03-14T07:33:46.036327+00:00",
+    "timestamp": "2026-03-15T10:01:24.733278+00:00",
     "pl_mean_db": 118.09,
-    "pl_std_db": 31.78
+    "pl_std_db": 31.78,
+    "vegetation_depth_m": 50.0
+  },
+  "rocky_mountain": {
+    "scenario": "rocky_mountain_rain",
+    "terrain_type": "rocky_mountain",
+    "weather_condition": "rain_10.0_mm_hr",
+    "n_runs": 1000,
+    "seed": 42,
+    "fixed_mcs": 15,
+    "adaptive_mcs_when_rain": 13,
+    "rain_mm_per_hr": 10.0,
+    "tx_power_dbm": 43.0,
+    "bandwidth_mhz": 20,
+    "mean_ber_fixed_mcs": 0.14217015558704116,
+    "mean_ber_adaptive_mcs": 0.13854411983490694,
+    "ber_improvement_pct": 2.55,
+    "adaptive_is_better": true,
+    "spec_references": [
+      "3GPP TR 38.901 V17.0.0, Table 7.4.1-1 (RMa path loss)",
+      "3GPP TS 38.214 Table 5.1.3.1-1 (MCS index table)",
+      "ITU-R P.838-3 (rain attenuation)",
+      "O-RAN E2SM-RC v1.03, Section 7.6 (control procedure)",
+      "ITU-R P.526 (knife-edge diffraction)"
+    ],
+    "timestamp": "2026-03-15T10:01:24.738892+00:00",
+    "pl_mean_db": 118.53,
+    "pl_std_db": 49.36,
+    "mountain_height_m": 800,
+    "region": "british_columbia"
+  },
+  "arctic_tundra": {
+    "scenario": "arctic_tundra_cold",
+    "terrain_type": "arctic_tundra",
+    "weather_condition": "rain_5.0_mm_hr",
+    "n_runs": 1000,
+    "seed": 42,
+    "fixed_mcs": 15,
+    "adaptive_mcs_when_rain": 13,
+    "rain_mm_per_hr": 5.0,
+    "tx_power_dbm": 43.0,
+    "bandwidth_mhz": 20,
+    "mean_ber_fixed_mcs": 0.12993835199898193,
+    "mean_ber_adaptive_mcs": 0.12993835199898193,
+    "ber_improvement_pct": 0.0,
+    "adaptive_is_better": true,
+    "spec_references": [
+      "3GPP TR 38.901 V17.0.0, Table 7.4.1-1 (RMa path loss)",
+      "3GPP TS 38.214 Table 5.1.3.1-1 (MCS index table)",
+      "ITU-R P.838-3 (rain attenuation)",
+      "O-RAN E2SM-RC v1.03, Section 7.6 (control procedure)",
+      "Permafrost ground reflection model",
+      "Ice loading antenna loss model"
+    ],
+    "timestamp": "2026-03-15T10:01:24.746985+00:00",
+    "pl_mean_db": 109.25,
+    "pl_std_db": 31.6,
+    "temperature_celsius": -30,
+    "region": "northern_canada"
   }
 }

@@ -52,11 +52,15 @@ def generate_html(bench_50, bench_1000, test_results):
     pipeline_color = "#27ae60" if test_results["all_green"] else "#e74c3c"
     pipeline_text = "ALL GREEN" if test_results["all_green"] else f"{test_results['total_failed']} FAILING"
 
-    # Extract 1000-run data
+    # Extract 1000-run data for all 4 terrains
     prairie = bench_1000.get("prairie_rma", {})
     boreal = bench_1000.get("boreal_forest", {})
+    rocky = bench_1000.get("rocky_mountain", {})
+    arctic = bench_1000.get("arctic_tundra", {})
     p_improve = prairie.get("ber_improvement_pct", 0)
     b_improve = boreal.get("ber_improvement_pct", 0)
+    r_improve = rocky.get("ber_improvement_pct", 0)
+    a_improve = arctic.get("ber_improvement_pct", 0)
 
     # Module rows
     module_rows = ""
@@ -147,66 +151,88 @@ def generate_html(bench_50, bench_1000, test_results):
     </div>
   </div>
 
-  <!-- TWO TERRAIN COMPARISON -->
-  <h2>Terrain Comparison</h2>
+  <!-- 4 TERRAIN COMPARISON -->
+  <h2>All 4 Canadian Terrains (N=1,000 each)</h2>
   <div class="two-col">
     <div class="card">
-      <h3 style="color:#00d4ff; margin-top:0;">Saskatchewan Prairie</h3>
-      <p style="color:#888; font-size:0.9em;">Flat, open farmland — typical rural Western Canada</p>
+      <h3 style="color:#27ae60; margin-top:0;">Saskatchewan Prairie</h3>
+      <p style="color:#888; font-size:0.85em;">Flat farmland — rain is the main challenge</p>
       <table>
-        <tr><th>Metric</th><th>Without WeatherRAN</th><th>With WeatherRAN</th></tr>
-        <tr>
-          <td>Error rate (BER)</td>
-          <td>{prairie.get('mean_ber_fixed_mcs', 0):.2%}</td>
-          <td class="pass">{prairie.get('mean_ber_adaptive_mcs', 0):.2%}</td>
-        </tr>
-        <tr>
-          <td>Radio setting (MCS)</td>
-          <td>Fixed at 15</td>
-          <td class="pass">Adapts to 13 in rain</td>
-        </tr>
-        <tr>
-          <td>Signal loss (path loss)</td>
-          <td colspan="2">{prairie.get('pl_mean_db', 0):.1f} dB average</td>
-        </tr>
+        <tr><td>Error rate without</td><td>{prairie.get('mean_ber_fixed_mcs', 0):.2%}</td></tr>
+        <tr><td>Error rate with WeatherRAN</td><td class="pass">{prairie.get('mean_ber_adaptive_mcs', 0):.2%}</td></tr>
+        <tr><td>Signal loss</td><td>{prairie.get('pl_mean_db', 0):.1f} dB</td></tr>
       </table>
       <div class="bar">
-        <span style="width:100px; font-size:0.8em; color:#888;">Improvement:</span>
+        <span style="width:90px; font-size:0.8em; color:#888;">Improved:</span>
         <div class="bar-fill" style="width:{min(p_improve*15, 100):.0f}%; background: linear-gradient(90deg, #27ae60, #00d4ff);">{p_improve:.1f}%</div>
       </div>
     </div>
     <div class="card">
-      <h3 style="color:#00d4ff; margin-top:0;">Ontario Boreal Forest</h3>
-      <p style="color:#888; font-size:0.9em;">Dense trees — signal fights through foliage + rain</p>
+      <h3 style="color:#006400; margin-top:0;">Ontario Boreal Forest</h3>
+      <p style="color:#888; font-size:0.85em;">Dense trees block signal — rain adds to foliage loss</p>
       <table>
-        <tr><th>Metric</th><th>Without WeatherRAN</th><th>With WeatherRAN</th></tr>
-        <tr>
-          <td>Error rate (BER)</td>
-          <td>{boreal.get('mean_ber_fixed_mcs', 0):.2%}</td>
-          <td class="pass">{boreal.get('mean_ber_adaptive_mcs', 0):.2%}</td>
-        </tr>
-        <tr>
-          <td>Radio setting (MCS)</td>
-          <td>Fixed at 15</td>
-          <td class="pass">Adapts to 13 in rain</td>
-        </tr>
-        <tr>
-          <td>Signal loss (path loss)</td>
-          <td colspan="2">{boreal.get('pl_mean_db', 0):.1f} dB average (higher = harder)</td>
-        </tr>
+        <tr><td>Error rate without</td><td>{boreal.get('mean_ber_fixed_mcs', 0):.2%}</td></tr>
+        <tr><td>Error rate with WeatherRAN</td><td class="pass">{boreal.get('mean_ber_adaptive_mcs', 0):.2%}</td></tr>
+        <tr><td>Signal loss</td><td>{boreal.get('pl_mean_db', 0):.1f} dB</td></tr>
       </table>
       <div class="bar">
-        <span style="width:100px; font-size:0.8em; color:#888;">Improvement:</span>
+        <span style="width:90px; font-size:0.8em; color:#888;">Improved:</span>
         <div class="bar-fill" style="width:{min(b_improve*15, 100):.0f}%; background: linear-gradient(90deg, #27ae60, #00d4ff);">{b_improve:.1f}%</div>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="color:#8B4513; margin-top:0;">BC Rocky Mountains</h3>
+      <p style="color:#888; font-size:0.85em;">Mountains block and scatter signal — valleys trap echoes</p>
+      <table>
+        <tr><td>Error rate without</td><td>{rocky.get('mean_ber_fixed_mcs', 0):.2%}</td></tr>
+        <tr><td>Error rate with WeatherRAN</td><td class="pass">{rocky.get('mean_ber_adaptive_mcs', 0):.2%}</td></tr>
+        <tr><td>Signal loss</td><td>{rocky.get('pl_mean_db', 0):.1f} dB</td></tr>
+      </table>
+      <div class="bar">
+        <span style="width:90px; font-size:0.8em; color:#888;">Improved:</span>
+        <div class="bar-fill" style="width:{min(r_improve*15, 100):.0f}%; background: linear-gradient(90deg, #27ae60, #00d4ff);">{r_improve:.1f}%</div>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="color:#87CEEB; margin-top:0;">Arctic Tundra</h3>
+      <p style="color:#888; font-size:0.85em;">Frozen ground reflects signal — ice coats antennas at -30C</p>
+      <table>
+        <tr><td>Error rate without</td><td>{arctic.get('mean_ber_fixed_mcs', 0):.2%}</td></tr>
+        <tr><td>Error rate with WeatherRAN</td><td>{arctic.get('mean_ber_adaptive_mcs', 0):.2%}</td></tr>
+        <tr><td>Signal loss</td><td>{arctic.get('pl_mean_db', 0):.1f} dB</td></tr>
+      </table>
+      <div class="bar">
+        <span style="width:90px; font-size:0.8em; color:#888;">Improved:</span>
+        <div class="bar-fill" style="width:{max(a_improve*15, 8):.0f}%; background: #555;">{a_improve:.1f}%</div>
       </div>
     </div>
   </div>
 
   <div class="explain">
-    <strong>Why is the forest improvement lower?</strong><br>
-    In dense boreal forest, trees already block so much signal that rain adds relatively less damage.
-    On open prairie, rain is the <em>main</em> problem — so fixing it has a bigger impact.
-    Both terrains show measurable improvement with WeatherRAN.
+    <strong>Why do results vary by terrain?</strong><br>
+    <strong>Prairie</strong> — rain is the main problem on flat land, so weather prediction helps most (5.3%).<br>
+    <strong>Forest</strong> — trees already block signal; rain adds less relative damage (3.3%).<br>
+    <strong>Mountains</strong> — ridges and valleys scatter signal; rain on top is secondary (2.6%).<br>
+    <strong>Arctic</strong> — at -30C with only light precipitation, rain-based policy doesn't trigger.
+    Arctic needs an ice/cold-specific policy (planned for Phase 3).
+  </div>
+
+  <!-- 6 CELL SITES -->
+  <h2>6 Canadian Cell Sites on Live Map</h2>
+  <div class="card">
+    <table>
+      <tr><th>Site</th><th>Province</th><th>Terrain</th><th>Coordinates</th></tr>
+      <tr><td>Saskatoon</td><td>Saskatchewan</td><td style="color:#27ae60">Prairie</td><td>52.13N, 106.67W</td></tr>
+      <tr><td>Thunder Bay</td><td>Ontario</td><td style="color:#006400">Boreal Forest</td><td>48.38N, 89.25W</td></tr>
+      <tr><td>Revelstoke</td><td>British Columbia</td><td style="color:#8B4513">Mountain</td><td>51.00N, 118.20W</td></tr>
+      <tr><td>Whistler</td><td>British Columbia</td><td style="color:#8B4513">Mountain</td><td>50.12N, 122.95W</td></tr>
+      <tr><td>Yellowknife</td><td>Northwest Territories</td><td style="color:#87CEEB">Arctic</td><td>62.45N, 114.37W</td></tr>
+      <tr><td>Iqaluit</td><td>Nunavut</td><td style="color:#87CEEB">Arctic</td><td>63.75N, 68.52W</td></tr>
+    </table>
+    <p style="color:#888; font-size:0.85em; margin-top:10px;">
+      Live weather radar overlay from Environment Canada (MSC GeoMet WMS — anonymous, no key).
+      Run the RAN-Intel map: <code>uvicorn src.ran_intel.app:app --port 8080</code>
+    </p>
   </div>
 
   <!-- HOW IT WORKS -->
