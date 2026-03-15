@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>RAN-Intel Live Map</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+  #map { position: absolute; top: 0; left: 280px; right: 0; bottom: 0; }
+  #sidebar {
+    position: absolute; top: 0; left: 0; width: 280px; height: 100%;
+    background: #1a1d23; color: #e0e0e0; padding: 24px 20px;
+    display: flex; flex-direction: column; gap: 20px;
+    z-index: 1000; overflow-y: auto;
+  }
+  #sidebar h1 {
+    font-size: 1.6rem; color: #4fc3f7; letter-spacing: 1px;
+    border-bottom: 2px solid #4fc3f7; padding-bottom: 10px;
+  }
+  .stat-card {
+    background: #252830; border-radius: 8px; padding: 14px 16px;
+  }
+  .stat-card .label { font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 1px; }
+  .stat-card .value { font-size: 1.3rem; color: #fff; margin-top: 4px; }
+  #sidebar a {
+    color: #4fc3f7; text-decoration: none; font-size: 0.9rem;
+  }
+  #sidebar a:hover { text-decoration: underline; }
+  .legend { margin-top: auto; }
+  .legend h3 { font-size: 0.85rem; color: #aaa; margin-bottom: 8px; }
+  .legend-item { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 0.82rem; }
+  .legend-dot { width: 12px; height: 12px; border-radius: 50%; }
+</style>
+</head>
+<body>
+
+<div id="sidebar">
+  <h1>RAN-Intel</h1>
+
+  <div class="stat-card">
+    <div class="label">Cell Sites</div>
+    <div class="value" id="site-count">--</div>
+  </div>
+
+  <div class="stat-card">
+    <div class="label">Last Weather Update</div>
+    <div class="value" id="last-update">--</div>
+  </div>
+
+  <div>
+    <a href="/api/sites" target="_blank">WeatherRAN Dashboard</a>
+  </div>
+
+  <div class="legend">
+    <h3>Terrain Types</h3>
+    <div class="legend-item"><span class="legend-dot" style="background:green"></span> Prairie</div>
+    <div class="legend-item"><span class="legend-dot" style="background:darkgreen"></span> Boreal</div>
+    <div class="legend-item"><span class="legend-dot" style="background:#8B4513"></span> Mountain</div>
+    <div class="legend-item"><span class="legend-dot" style="background:lightblue"></span> Arctic</div>
+  </div>
+</div>
+
+<div id="map"></div>
+
+<script>
+const TERRAIN_COLORS = {
+  prairie: 'green',
+  boreal: 'darkgreen',
+  mountain: '#8B4513',
+  arctic: 'lightblue'
+};
+
+const map = L.map('map').setView([56, -96], 4);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; OpenStreetMap contributors',
+  maxZoom: 18
+}).addTo(map);
+
+// MSC GeoMet WMS radar overlay
+const radarLayer = L.tileLayer.wms('https://geo.weather.gc.ca/geomet', {
+  layers: 'RADAR_1KM_RDBR',
+  format: 'image/png',
+  transparent: true,
+  opacity: 0.5,
+  attribution: 'Weather data &copy; ECCC'
+});
+
+const overlays = { 'Radar': radarLayer };
+L.control.layers(null, overlays, { position: 'topright' }).addTo(map);
+radarLayer.addTo(map);
+
+function makeIcon(color) {
+  return L.divIcon({
+    className: '',
+    html: '<div style="width:14px;height:14px;border-radius:50%;background:' + color +
+          ';border:2px solid #fff;box-shadow:0 0 4px rgba(0,0,0,0.5)"></div>',
+    iconSize: [14, 14],
+    iconAnchor: [7, 7]
+  });
+}
+
+async function loadSites() {
+  const resp = await fetch('/api/sites');
+  const sites = await resp.json();
+  document.getElementById('site-count').textContent = sites.length;
+  sites.forEach(s => {
+    const color = TERRAIN_COLORS[s.terrain_type] || 'gray';
+    L.marker([s.lat, s.lon], { icon: makeIcon(color) })
+      .addTo(map)
+      .bindPopup(
+        '<strong>' + s.name + '</strong><br>' +
+        'Terrain: ' + s.terrain_type + '<br>' +
+        'Status: ' + s.status
+      );
+  });
+}
+
+function updateTimestamp() {
+  const now = new Date();
+  document.getElementById('last-update').textContent =
+    now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+
+async function refreshWeather() {
+  // Refresh the radar layer by resetting
+  radarLayer.setParams({ _t: Date.now() });
+  updateTimestamp();
+}
+
+loadSites();
+updateTimestamp();
+setInterval(refreshWeather, 60000);
+</script>
+</body>
+</html>
