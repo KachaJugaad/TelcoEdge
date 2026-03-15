@@ -217,22 +217,44 @@ def generate_html(bench_50, bench_1000, test_results):
     Arctic needs an ice/cold-specific policy (planned for Phase 3).
   </div>
 
-  <!-- 6 CELL SITES -->
-  <h2>6 Canadian Cell Sites on Live Map</h2>
-  <div class="card">
-    <table>
-      <tr><th>Site</th><th>Province</th><th>Terrain</th><th>Coordinates</th></tr>
-      <tr><td>Saskatoon</td><td>Saskatchewan</td><td style="color:#27ae60">Prairie</td><td>52.13N, 106.67W</td></tr>
-      <tr><td>Thunder Bay</td><td>Ontario</td><td style="color:#006400">Boreal Forest</td><td>48.38N, 89.25W</td></tr>
-      <tr><td>Revelstoke</td><td>British Columbia</td><td style="color:#8B4513">Mountain</td><td>51.00N, 118.20W</td></tr>
-      <tr><td>Whistler</td><td>British Columbia</td><td style="color:#8B4513">Mountain</td><td>50.12N, 122.95W</td></tr>
-      <tr><td>Yellowknife</td><td>Northwest Territories</td><td style="color:#87CEEB">Arctic</td><td>62.45N, 114.37W</td></tr>
-      <tr><td>Iqaluit</td><td>Nunavut</td><td style="color:#87CEEB">Arctic</td><td>63.75N, 68.52W</td></tr>
-    </table>
-    <p style="color:#888; font-size:0.85em; margin-top:10px;">
-      Live weather radar overlay from Environment Canada (MSC GeoMet WMS — anonymous, no key).
-      Run the RAN-Intel map: <code>uvicorn src.ran_intel.app:app --port 8080</code>
-    </p>
+  <!-- 6 CELL SITES — LIVE MAP -->
+  <h2>6 Canadian Cell Sites</h2>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <div class="card" style="padding: 0; overflow: hidden; border-radius: 10px;">
+    <div id="map" style="height: 420px; width: 100%;"></div>
+  </div>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    var map = L.map('map', {{zoomControl: true}}).setView([56, -96], 4);
+    L.tileLayer('https://{{s}}.basemaps.cartocdn.com/dark_all/{{z}}/{{x}}/{{y}}{{r}}.png', {{
+      attribution: 'CartoDB | Weather: Environment Canada (free, no key)',
+      maxZoom: 12
+    }}).addTo(map);
+    // MSC GeoMet weather radar overlay — anonymous, no key
+    L.tileLayer.wms('https://geo.weather.gc.ca/geomet', {{
+      layers: 'RADAR_1KM_RDBR',
+      format: 'image/png',
+      transparent: true,
+      opacity: 0.5,
+      attribution: 'Radar: MSC GeoMet (Gov Canada)'
+    }}).addTo(map);
+    var sites = [
+      {{name:"Saskatoon", lat:52.13, lon:-106.67, terrain:"Prairie", color:"#27ae60", prov:"SK"}},
+      {{name:"Thunder Bay", lat:48.38, lon:-89.25, terrain:"Boreal Forest", color:"#006400", prov:"ON"}},
+      {{name:"Revelstoke", lat:51.00, lon:-118.20, terrain:"Mountain", color:"#8B4513", prov:"BC"}},
+      {{name:"Whistler", lat:50.12, lon:-122.95, terrain:"Mountain", color:"#cd853f", prov:"BC"}},
+      {{name:"Yellowknife", lat:62.45, lon:-114.37, terrain:"Arctic", color:"#87CEEB", prov:"NT"}},
+      {{name:"Iqaluit", lat:63.75, lon:-68.52, terrain:"Arctic", color:"#5f9ea0", prov:"NU"}}
+    ];
+    sites.forEach(function(s) {{
+      L.circleMarker([s.lat, s.lon], {{radius:10, fillColor:s.color, color:"#fff", weight:2, fillOpacity:0.9}})
+        .addTo(map)
+        .bindPopup('<b>'+s.name+', '+s.prov+'</b><br>Terrain: '+s.terrain+'<br>Weather radar: live overlay');
+    }});
+  </script>
+  <div style="padding: 12px 20px; font-size: 0.85em; color: #888;">
+    Map shows live Environment Canada weather radar (MSC GeoMet WMS — anonymous, no API key).
+    Click a site for details. Run full map locally: <code>uvicorn src.ran_intel.app:app --port 8080</code>
   </div>
 
   <!-- HOW IT WORKS -->
@@ -269,7 +291,7 @@ def generate_html(bench_50, bench_1000, test_results):
   </div>
 
   <!-- WHAT WAS DELIVERED -->
-  <h2>Phase 1 Deliverables</h2>
+  <h2>All Deliverables (Phase 1 + 2)</h2>
   <div class="card">
     <table>
       <tr><th>Deliverable</th><th>Status</th><th>What it means</th></tr>
@@ -278,15 +300,20 @@ def generate_html(bench_50, bench_1000, test_results):
       <tr><td>Boreal forest model</td><td><span class="phase-tag">Done</span></td><td>Ontario/Quebec forests — foliage blockage + snow effects</td></tr>
       <tr><td>Rocky mountain model</td><td><span class="phase-tag">Done</span></td><td>BC/Alberta Rockies — mountain diffraction + valley multipath</td></tr>
       <tr><td>Arctic tundra model</td><td><span class="phase-tag">Done</span></td><td>Northern Canada — permafrost reflection + ice loading + blizzard</td></tr>
-      <tr><td>RAN-Intel live map</td><td><span class="phase-tag">Done</span></td><td>6 Canadian sites on Leaflet.js map with live weather radar overlay</td></tr>
+      <tr><td>RAN-Intel live map</td><td><span class="phase-tag">Done</span></td><td>6 Canadian sites with live weather radar (see map above)</td></tr>
       <tr><td>MCS adjustment policy</td><td><span class="phase-tag">Done</span></td><td>Automatically makes radio more robust when rain is coming</td></tr>
       <tr><td>Beam adaptation policy</td><td><span class="phase-tag">Done</span></td><td>Widens antenna beam to cover more area during storms</td></tr>
-      <tr><td>1,000-run benchmark</td><td><span class="phase-tag">Done</span></td><td>Statistically validated across 2 terrains, 2,000 total simulations</td></tr>
-      <tr><td>One-command demo</td><td><span class="phase-tag">Done</span></td><td>docker compose up — runs entire demo on any laptop</td></tr>
+      <tr><td>Anomaly detection</td><td><span class="phase-tag">Done</span></td><td>Detects interference, DoS attacks, signal manipulation</td></tr>
+      <tr><td>NTN handover predictor</td><td><span class="phase-tag">Done</span></td><td>Predicts satellite dropout 60 seconds ahead (F1 >= 0.80)</td></tr>
+      <tr><td>4,000-run benchmark</td><td><span class="phase-tag">Done</span></td><td>All 4 terrains, 1000 runs each, statistically validated</td></tr>
+      <tr><td>STRIDE security models</td><td><span class="phase-tag">Done</span></td><td>Threat models for map + adapter API boundaries</td></tr>
+      <tr><td>E2E integration tests</td><td><span class="phase-tag">Done</span></td><td>Full pipeline tested: weather → policy → channel → BER</td></tr>
+      <tr><td>CI pipeline</td><td><span class="phase-tag">Done</span></td><td>5-job GitHub Actions: monitor, smoke, integration, security, benchmark</td></tr>
+      <tr><td>Docker demo</td><td><span class="phase-tag">Done</span></td><td>docker compose up — runs entire demo on any laptop</td></tr>
+      <tr><td>Jetson Orin deploy</td><td><span class="phase-tag">Done</span></td><td>ARM64 edge deployment for field use</td></tr>
       <tr><td>Demo script</td><td><span class="phase-tag">Done</span></td><td>15-minute presentation ready for TELUS / DND</td></tr>
+      <tr><td>L-SPARK application</td><td><span class="phase-tag">Done</span></td><td>Accelerator application drafted</td></tr>
       <tr><td>Patent claim drafts</td><td><span class="phase-tag pending">Review</span></td><td>3 claims drafted, need patent agent review</td></tr>
-      <tr><td>NTN handover predictor</td><td><span class="phase-tag pending">Phase 2</span></td><td>Predict satellite dropout 60 seconds ahead</td></tr>
-      <tr><td>Anomaly detection</td><td><span class="phase-tag pending">Phase 2</span></td><td>Spectrum anomaly detection for rural + defence</td></tr>
     </table>
   </div>
 
@@ -310,13 +337,15 @@ def generate_html(bench_50, bench_1000, test_results):
       <tr><td>Tree effect model</td><td>ITU-R P.833-9 (vegetation attenuation standard)</td></tr>
       <tr><td>Radio control interface</td><td>O-RAN E2SM-RC v1.03 (open radio access network standard)</td></tr>
       <tr><td>Performance metrics</td><td>O-RAN E2SM-KPM v3.0 (network measurement standard)</td></tr>
+      <tr><td>Mountain diffraction</td><td>ITU-R P.526 (knife-edge diffraction model)</td></tr>
+      <tr><td>Satellite handover</td><td>3GPP TR 38.821 Rel-18 (non-terrestrial network spec)</td></tr>
       <tr><td>Radio settings table</td><td>3GPP TS 38.214 Table 5.1.3.1-1 (MCS index 0-28)</td></tr>
     </table>
   </div>
 
   <div class="footer">
-    WeatherRAN | {test_results['total']} tests passing
-    | 4 Canadian terrain archetypes | 2,000+ simulation runs
+    WeatherRAN — Phase 1 + 2 Complete | {test_results['total']} tests passing
+    | 4 terrain archetypes | 6 sites | 4,000 simulations | 0 credentials needed
     <br>Weather data: Environment Canada MSC GeoMet (anonymous, free, sovereign)
     <br>Apache 2.0 Licensed | github.com/KachaJugaad/TelcoEdge
   </div>
