@@ -1,0 +1,157 @@
+###############################################################################
+# CanEdge AI-RAN — CI Pipeline
+#
+# Jobs:
+#   1. monitor-checks — spec version, lineage audit, budget, weather API
+#   2. smoke-tests    — pytest smoke, policies, adapters, channel
+#   3. integration-tests — pytest integration
+#   4. security-scan  — bandit + STRIDE check
+#   5. full-benchmark — manual trigger only (1000-run Monte-Carlo)
+#
+# PR blocking: smoke-tests + security-scan must pass
+###############################################################################
+
+name: CanEdge CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      run_full_benchmark:
+        description: "Run full 1000-iteration benchmark"
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  # ─────────────────────────────────────────────────────────────────────────
+  # Job 1: Monitor checks — mirrors SESSION_START_CHECKS from project spec
+  # ─────────────────────────────────────────────────────────────────────────
+  monitor-checks:
+    name: Monitor Checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install numpy pytest fastapi httpx uvicorn
+
+      - name: Spec version check
+        run: python tools/spec_version_check.py
+        continue-on-error: false
+
+      - name: Data lineage audit
+        run: python tools/lineage_audit.py data/
+        continue-on-error: false
+
+      - name: Compute budget check
+        run: python tools/budget_check.py
+        continue-on-error: false
+
+      - name: Weather API reachability
+        run: python tools/weather_api_check.py
+        continue-on-error: true
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # Job 2: Smoke tests — core test suites (PR-blocking)
+  # ─────────────────────────────────────────────────────────────────────────
+  smoke-tests:
+    name: Smoke Tests
+    needs: monitor-checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install numpy pytest fastapi httpx uvicorn
+
+      - name: Run smoke tests
+        run: pytest tests/smoke/ tests/policies/ tests/adapters/ tests/channel/ -v --tb=short
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # Job 3: Integration tests
+  # ─────────────────────────────────────────────────────────────────────────
+  integration-tests:
+    name: Integration Tests
+    needs: smoke-tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install numpy pytest fastapi httpx uvicorn
+
+      - name: Run integration tests
+        run: pytest tests/integration/ -v --tb=short
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # Job 4: Security scan (PR-blocking)
+  # ─────────────────────────────────────────────────────────────────────────
+  security-scan:
+    name: Security Scan
+    needs: monitor-checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install numpy pytest fastapi httpx uvicorn
+          pip install bandit
+
+      - name: Run bandit security scan
+        run: bandit -r src/ -ll --format txt
+
+      - name: Run STRIDE threat model check
+        run: python tools/stride_check.py
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # Job 5: Full benchmark — manual trigger only (workflow_dispatch)
+  # ─────────────────────────────────────────────────────────────────────────
+  full-benchmark:
+    name: Full Benchmark (1000 runs)
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.run_full_benchmark == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install numpy pytest fastapi httpx uvicorn
+
+      - name: Run 1000-iteration benchmark
+        run: pytest tests/integration/ -v --tb=short -k benchmark --run-count=1000
+        env:
+          CANEDGE_BENCHMARK_RUNS: "1000"

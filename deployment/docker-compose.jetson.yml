@@ -1,0 +1,84 @@
+###############################################################################
+# CanEdge AI-RAN — Jetson Orin Deployment (ARM64)
+#
+# Usage:
+#   docker compose -f deployment/docker-compose.jetson.yml up
+#
+# Opens:
+#   http://<jetson-ip>:8080  — RAN-Intel situational awareness map
+#   http://<jetson-ip>:3000  — Grafana dashboard
+#
+# Target hardware:
+#   NVIDIA Jetson Orin Nano / NX (4 GB+ RAM, ARM64)
+#
+# Notes:
+#   - Uses python:3.11-slim base (multi-arch, supports ARM64 natively)
+#   - Resource limits tuned for 4 GB RAM Jetson configurations
+#   - MSC GeoMet weather data — no API key needed (Government of Canada)
+###############################################################################
+
+services:
+  canedge-app:
+    build:
+      context: ..
+      dockerfile: deployment/demo-app/Dockerfile
+    container_name: canedge-app
+    platform: linux/arm64
+    ports:
+      - "8080:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - CANEDGE_DEPLOYMENT=jetson
+    deploy:
+      resources:
+        limits:
+          cpus: "4.0"
+          memory: 1536M
+        reservations:
+          cpus: "1.0"
+          memory: 512M
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+    restart: unless-stopped
+    networks:
+      - canedge
+
+  grafana:
+    image: grafana/grafana-oss:latest
+    container_name: canedge-grafana
+    platform: linux/arm64
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=canedge
+      - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/etc/grafana/provisioning/dashboards/weatherran.json
+      - GF_INSTALL_PLUGINS=marcusolsson-json-datasource
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
+      - GF_SERVER_HTTP_PORT=3000
+    volumes:
+      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+      - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 1024M
+        reservations:
+          cpus: "0.5"
+          memory: 256M
+    depends_on:
+      canedge-app:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - canedge
+
+networks:
+  canedge:
+    driver: bridge
