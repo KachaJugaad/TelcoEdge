@@ -196,30 +196,33 @@ Every implementation cites its source. Nothing is invented.
 
 Run `python tools/update_dashboard.py` then open `docs/canedge-testview.html`:
 
-- Pipeline status (118/118 tests green)
-- Per-module test breakdown
-- Benchmark results with scenario details
-- Spec references
+- 332/332 tests green across 17 modules
+- 4 terrain comparisons with improvement bars
+- Live interactive map with 6 Canadian cell sites
+- Architecture diagram, get started guide
+- "Simulation vs Real World" gap analysis
+- "Who Can Use This" guide for different audiences
 
 ---
 
 ## Current Status
 
-**Phase 1 — WeatherRAN xApp MVP** (in progress)
+**Phase 1 + 2 + 3 Complete**
 
-- [x] Architecture design with E2 interface spec
-- [x] Prairie RMa channel scene (3GPP-validated)
-- [x] Boreal forest channel scene (foliage + snow)
-- [x] WeatherMCS policy (rain → MCS adjustment)
-- [x] Beam adaptation policy (rain/wind → beam control)
-- [x] MSC GeoMet weather adapter (live, no key)
-- [x] 50-run benchmark (11.7% BER improvement)
-- [x] 118 tests, all passing
-- [x] Test dashboard
-- [ ] Rocky mountain + Arctic tundra terrain scenes
-- [ ] Docker compose one-command demo
-- [ ] 1000-run full benchmark
-- [ ] NTN (satellite) handover predictor
+- [x] 4 terrain channel models (prairie, boreal, mountain, arctic)
+- [x] 6 O-RAN policies (MCS, beam, anomaly, NTN handover, IoT scheduler, DND priority)
+- [x] Weather adapter (live from Government of Canada, no key)
+- [x] IoT ingestion layer (MQTT/AMQP routing)
+- [x] TN/LEO failover engine (auto satellite switching)
+- [x] PROTECTED-B compliance layer (defence data sovereignty)
+- [x] RAN-Intel live map (6 sites, weather radar overlay)
+- [x] 4,000-run benchmark across 4 terrains
+- [x] NTN handover predictor (F1 >= 0.80)
+- [x] STRIDE security models for all API boundaries
+- [x] Per-hop latency budget tests (E2E ≤ 10ms)
+- [x] Docker demo + Jetson Orin deploy
+- [x] CI pipeline (5-job GitHub Actions)
+- [x] 332 tests, all passing
 
 ---
 
