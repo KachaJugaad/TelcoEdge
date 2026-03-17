@@ -19,7 +19,7 @@
     "ITU-R P.838-3 (rain attenuation)",
     "O-RAN E2SM-RC v1.03, Section 7.6 (control procedure)"
   ],
-  "timestamp": "2026-03-17T19:24:03.201036+00:00",
+  "timestamp": "2026-03-17T19:34:05.450249+00:00",
   "pl_mean_db": 104.63,
   "pl_std_db": 25.83
 }

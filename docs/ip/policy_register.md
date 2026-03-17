@@ -137,14 +137,70 @@ using O-RAN E2SM-RC v1.03 control actions.
 
 ---
 
+### 5. dnd_priority_queue.py
+
+| Field | Value |
+|---|---|
+| **File** | `src/policies/dnd_priority_queue.py` |
+| **Status** | Implemented |
+| **Test file** | `tests/policies/test_dnd_priority_queue.py` |
+| **Phase** | Phase 3 |
+| **Date implemented** | 2026-03-17 |
+| **Related claim** | Supports Claim 1 in `docs/ip/claims_draft.md` (defence priority extension) |
+
+**What it does:**
+
+Defence priority queue policy for the WeatherRAN xApp. Implements priority-
+based traffic scheduling under Contested, Degraded, Intermittent, Limited
+(CDIL) conditions. Classifies traffic by mission criticality and applies
+weather-aware scheduling decisions via O-RAN E2SM-RC v1.03 control actions.
+STRIDE threat model required for all agent-to-API boundaries.
+
+**References:**
+
+- O-RAN E2SM-RC v1.03, Section 7.6 (Control Procedure)
+- O-RAN E2SM-KPM v3.0, Table 7.4.3-1
+- OSC RICAPP: j-release-2025 (pinned in specs/versions.lock)
+
+---
+
+### 6. tn_leo_failover.py
+
+| Field | Value |
+|---|---|
+| **File** | `src/policies/tn_leo_failover.py` |
+| **Status** | Implemented |
+| **Test file** | `tests/policies/test_tn_leo_failover.py` |
+| **Phase** | Phase 3 |
+| **Date implemented** | 2026-03-17 |
+| **Related claim** | Supports Claim 1 in `docs/ip/claims_draft.md` (TN/LEO failover extension) |
+
+**What it does:**
+
+Terrestrial Network / LEO satellite automatic failover policy. Monitors
+both terrestrial and non-terrestrial link quality via E2SM-KPM reports and
+executes automatic failover when the primary link degrades below configurable
+thresholds. Implements the NTN failure protocol defined in PROJECT.md Rule
+R-6: on stale coverage data (>30 min), reverts to terrestrial mode; on
+handover misfire, rolls back policy and logs incident; on LEO signal loss,
+buffers 30 seconds, attempts reroute, then falls back to terrestrial.
+
+**References:**
+
+- O-RAN E2SM-RC v1.03, Section 7.6 (Control Procedure)
+- O-RAN E2SM-KPM v3.0, Table 7.4.3-1
+- 3GPP TR 38.821 (NTN channel model and handover procedures)
+- OSC RICAPP: j-release-2025 (pinned in specs/versions.lock)
+
+---
+
 ## Planned Policy Classes (Not Yet Implemented)
 
 | Policy file | Target phase | Description |
 |---|---|---|
 | `iot_priority_scheduler.py` | Phase 3 | Sensor burst + URLLC coexistence scheduling |
-| `dnd_priority_queue.py` | Phase 3 | Defence priority queue (STRIDE model required) |
 
 ---
 
-*DRAFT -- Date: 2026-03-15*
+*DRAFT -- Date: 2026-03-17*
 *Update this register when any new policy class is added to src/policies/*
