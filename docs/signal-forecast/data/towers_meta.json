@@ -1,0 +1,20 @@
+{
+  "Bell": {
+    "sites": 9803,
+    "file": "towers_bell.json",
+    "size_kb": 903.5,
+    "color": "#0066A4"
+  },
+  "Rogers": {
+    "sites": 11028,
+    "file": "towers_rogers.json",
+    "size_kb": 1027.8,
+    "color": "#DA291C"
+  },
+  "TELUS": {
+    "sites": 11925,
+    "file": "towers_telus.json",
+    "size_kb": 1060.6,
+    "color": "#4B286D"
+  }
+}

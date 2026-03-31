@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signal Forecast — Will your call drop tomorrow?</title>
+  <meta name="description" content="24-hour cell signal forecast for Bell, Rogers, and TELUS. Enter your postal code to see how weather affects your coverage.">
+
+  <!-- Open Graph for social sharing -->
+  <meta property="og:title" content="Signal Forecast — Canadian Cell Signal Weather Report">
+  <meta property="og:description" content="Enter your postal code. See if your signal will survive the weather. Bell vs Rogers vs TELUS, side by side.">
+  <meta property="og:type" content="website">
+
+  <!-- Leaflet CSS (map) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin="">
+
+  <!-- App CSS -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ================================================================
+       Header
+       ================================================================ -->
+  <header class="header">
+    <h1>Signal Forecast</h1>
+    <p class="subtitle">Will your call drop tomorrow? Enter your postal code.</p>
+    <p class="data-source">
+      Powered by ISED tower registry (32,756 sites) + Environment Canada weather (free, no API key)
+    </p>
+  </header>
+
+  <!-- ================================================================
+       Search
+       ================================================================ -->
+  <section class="search-section">
+    <div class="search-bar">
+      <input type="text" id="postal-input"
+             placeholder="Enter postal code (e.g. K1A 0B1)"
+             maxlength="7"
+             autocomplete="postal-code">
+      <button id="search-btn">Forecast</button>
+    </div>
+    <p class="search-help">Try any Canadian postal code — works nationwide</p>
+
+    <!-- Quick city links -->
+    <div class="quick-links">
+      <button data-postal="M5V 3L9">Toronto</button>
+      <button data-postal="H3A 0G4">Montreal</button>
+      <button data-postal="V6B 1A1">Vancouver</button>
+      <button data-postal="K1A 0B1">Ottawa</button>
+      <button data-postal="T2P 1J9">Calgary</button>
+      <button data-postal="T5J 0K1">Edmonton</button>
+      <button data-postal="R3C 4A5">Winnipeg</button>
+      <button data-postal="S7K 0A1">Saskatoon</button>
+      <button data-postal="B3H 4R2">Halifax</button>
+      <button data-postal="A1C 1A1">St. John's</button>
+      <button data-postal="P3E 4S1">Sudbury</button>
+      <button data-postal="V1Y 1Z1">Kelowna</button>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       Weather Scenario Selector
+       ================================================================ -->
+  <section class="scenario-section">
+    <div class="scenario-label">Weather scenario (or use live weather)</div>
+    <div class="scenario-buttons">
+      <button data-scenario="live" class="active">Live Weather</button>
+      <button data-scenario="clear">Clear Sky</button>
+      <button data-scenario="rain">Rain</button>
+      <button data-scenario="heavy_rain">Heavy Rain</button>
+      <button data-scenario="thunderstorm">Thunderstorm</button>
+      <button data-scenario="snow">Snow</button>
+      <button data-scenario="blizzard">Blizzard</button>
+      <button data-scenario="fog">Fog</button>
+      <button data-scenario="smoke">Wildfire Smoke</button>
+      <button data-scenario="ice_storm">Ice Storm</button>
+    </div>
+  </section>
+
+  <!-- ================================================================
+       Status
+       ================================================================ -->
+  <div id="status-bar" class="status-bar" style="display:none"></div>
+
+  <!-- ================================================================
+       Results
+       ================================================================ -->
+  <section class="results" id="results-section">
+
+    <!-- Location + weather summary -->
+    <div id="location-summary" class="location-summary"></div>
+
+    <!-- Carrier signal cards -->
+    <div id="carrier-cards" class="carrier-cards"></div>
+
+    <!-- Tower map -->
+    <div class="map-section">
+      <h3>Nearby Cell Towers</h3>
+      <div id="tower-map"></div>
+    </div>
+
+  </section>
+
+  <!-- ================================================================
+       Footer
+       ================================================================ -->
+  <footer class="footer">
+    <p>
+      Signal Forecast by
+      <a href="https://github.com/KachaJugaad/telcoEdge" target="_blank" rel="noopener">CanEdge-AI-RAN</a>
+    </p>
+    <p class="disclaimer">
+      Tower locations from
+      <a href="https://www.ic.gc.ca/eic/site/smt-gst.nsf/eng/h_sf01841.html" target="_blank" rel="noopener">
+        ISED Spectrum Management</a> (Open Government Licence).
+      Weather from
+      <a href="https://api.weather.gc.ca/" target="_blank" rel="noopener">
+        MSC GeoMet</a> (Government of Canada, no API key).
+      Signal predictions are estimates based on RF propagation models —
+      actual coverage depends on terrain, buildings, and network load.
+      Not affiliated with Bell, Rogers, or TELUS.
+    </p>
+    <p class="disclaimer" style="margin-top:4px">
+      Data is sovereign Canadian — nothing leaves Canada.
+    </p>
+  </footer>
+
+  <!-- ================================================================
+       Scripts
+       ================================================================ -->
+
+  <!-- Chart.js (charts) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+
+  <!-- Leaflet (map) -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+          crossorigin=""></script>
+
+  <!-- App modules -->
+  <script src="js/postal-lookup.js"></script>
+  <script src="js/signal-model.js"></script>
+  <script src="js/weather-adapter.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
