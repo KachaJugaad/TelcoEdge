@@ -1,6 +1,8 @@
 # WeatherRAN — Weather-Predictive O-RAN xApp for Rural Canada
 
-**[Live Dashboard](https://kachajugaad.github.io/TelcoEdge/)** | **[Phase 1 Results: 5.3% signal improvement across 2,000 simulations](https://kachajugaad.github.io/TelcoEdge/)**
+**[Live Dashboard](https://kachajugaad.github.io/TelcoEdge/)** | **[Phase 1 Results: 5.3% signal improvement across 2,000 simulations](https://kachajugaad.github.io/TelcoEdge/)** 
+
+**[Live Signal Forcast](https://kachajugaad.github.io/TelcoEdge/signal-forecast/)**
 
 **Traditional RAN waits for signal to degrade, then reacts.
 WeatherRAN reads the weather forecast and adapts *before* the rain hits.**
